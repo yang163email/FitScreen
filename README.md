@@ -67,25 +67,24 @@ Log.d(TAG," densityDpi is "+displayMetrics.densityDpi);
 
 例如：
 
-```java
-CommonUtils.setTextTopImgSize(getContext(), mTvFollowup, R.mipmap.tag_followup, R.dimen.xdp_56, R.dimen.xdp_53);
-...
-/**
- * 设置TextView顶部图片的大小
- */
-public static void setTextTopImgSize(Context context, TextView tv, @DrawableRes int imgId,
-                                         @DimenRes int widthId, @DimenRes int heightId) {
-    //调整图片大小
-    int width = context.getResources().getDimensionPixelSize(widthId);
-    int height = context.getResources().getDimensionPixelSize(heightId);
-    Drawable drawable1 = context.getResources().getDrawable(imgId);
-    drawable1.setBounds(0, 0, width, height);//第一0是距左边距离，第二0是距上边距离，40分别是长宽
-    tv.setCompoundDrawables(null, drawable1, null, null);//只放上边
-}
-```
+   ```java
+   CommonUtils.setTextTopImgSize(getContext(), mTvFollowup, R.mipmap.tag_followup, R.dimen.xdp_56, R.dimen.xdp_53);
+   ...
+   /**
+    * 设置TextView顶部图片的大小
+    */
+   public static void setTextTopImgSize(Context context, TextView tv, @DrawableRes int imgId,
+                                            @DimenRes int widthId, @DimenRes int heightId) {
+       //调整图片大小
+       int width = context.getResources().getDimensionPixelSize(widthId);
+       int height = context.getResources().getDimensionPixelSize(heightId);
+       Drawable drawable1 = context.getResources().getDrawable(imgId);
+       drawable1.setBounds(0, 0, width, height);//第一0是距左边距离，第二0是距上边距离，40分别是长宽
+       tv.setCompoundDrawables(null, drawable1, null, null);//只放上边
+   }
+   ```
 
-1. 以上都可以通过代码来进行操作。
-
+5. 以上都可以通过代码来进行操作。
 
 
 ### 最后
