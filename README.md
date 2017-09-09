@@ -9,7 +9,7 @@ Android屏幕适配的一种方案，包含自动生成xml文件jar包，自动�
 
 最开始使用dp设置控件尺寸，在hornor v8 1440x2560的手机显示正常，到了samsung Galaxy On7 1080x1920的手机上显示爆炸。。。(左hornor v8 1440x2560, 右samsung Galaxy On7 1080x1920)
 
-![2k](.\img\2k.jpg)  ![1080p](.\img\1080p.jpg)
+![2k](https://github.com/yang163email/FitScreen/raw/master/img/2k.jpg)  ![1080p](https://github.com/yang163email/FitScreen/raw/master/img/1080p.jpg)
 
 
 
@@ -40,6 +40,12 @@ Log.d(TAG," densityDpi is "+displayMetrics.densityDpi);
 
 
 
+### 适配后
+
+![last-2k](https://github.com/yang163email/FitScreen/raw/master/img/last-2k.jpg) ![last-1080](https://github.com/yang163email/FitScreen/raw/master/img/last-1080.jpg)
+
+
+
 ### 如何使用
 
 我已经将jar文件(jar包下)以及java文件放入仓库中，提供源码进行查看(src包下)。
@@ -55,7 +61,30 @@ Log.d(TAG," densityDpi is "+displayMetrics.densityDpi);
    - 路径格式：1. `D:/test/test/...`   2. `D:\\test\\test\\...`
    - 路径格式请勿使用单反斜杠('\')，否则无法识别。
    - 如果不满足你的需求，可以自己修改源码，源码已提供。
-3. 以上都可以通过代码来进行操作。
+3. 在这里说一下我的图片问题，同样是wrap_content的情况下, honor v8可以正常显示，Samsung测试机还是老样子，至于后来怎么调整到差不多效果，我采用了一个不大好的方法，全部使用dp表示。如有更好的方法，你可以在issue上面提出来，或者直接发邮件给我。
+4. 如果在xml上面不能满足你的需求，你也可以在代码中完成适配，只要拿到对应dimen的值。
+
+
+例如：
+
+```java
+CommonUtils.setTextTopImgSize(getContext(), mTvFollowup, R.mipmap.tag_followup, R.dimen.xdp_56, R.dimen.xdp_53);
+...
+/**
+ * 设置TextView顶部图片的大小
+ */
+public static void setTextTopImgSize(Context context, TextView tv, @DrawableRes int imgId,
+                                         @DimenRes int widthId, @DimenRes int heightId) {
+    //调整图片大小
+    int width = context.getResources().getDimensionPixelSize(widthId);
+    int height = context.getResources().getDimensionPixelSize(heightId);
+    Drawable drawable1 = context.getResources().getDrawable(imgId);
+    drawable1.setBounds(0, 0, width, height);//第一0是距左边距离，第二0是距上边距离，40分别是长宽
+    tv.setCompoundDrawables(null, drawable1, null, null);//只放上边
+}
+```
+
+1. 以上都可以通过代码来进行操作。
 
 
 
