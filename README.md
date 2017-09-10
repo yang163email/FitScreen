@@ -99,7 +99,7 @@ Log.d(TAG," densityDpi is "+displayMetrics.densityDpi);
    - 不需要，本方案已经提供一个自动替换的jar文件ReplaceDpAndSp.jar。
    - 下载下来后，cmd输入`java -jar ReplaceDpAndSp.jar 需要修改的绝对路径`。
    - 需要修改的绝对路径可以是layout、drawable目录，前提是xml文件。
-   - 路径格式：1. `D:/test/test/...`   2. `D:\\test\\test\\...` 。路径格式请勿使用单反斜杠('\')，否则无法识别。
+   - 路径格式：1. `D:/test/test/...`   2. `D:\\test\\test\\...` 。路径格式请勿使用单反斜杠`\`，否则无法识别。
    - 只输入`java -jar ReplaceDpAndSp.jar` ，默认会在当前jar包所在路径进行替换操作。
    - 如果不满足你的需求，可以自己修改源码，源码已提供。
    - **注意：**
