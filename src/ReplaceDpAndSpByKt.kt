@@ -14,50 +14,49 @@ class ReplaceDpAndSpByKt(path: String) {
 
     init {
         // 操作目录。从该目录开始。该文件目录下及其所有子目录的文件都将被替换
-        val files = File(path).listFiles()
+        operatorXmlFile(File(path))
+    }
+
+    private fun operatorXmlFile(file: File) {
+        val files = file.listFiles()
         files?.let {
             it.forEach {
                 if (it.isFile && it.name.endsWith(".xml")) //是xml文件则执行操作
                     operatorFile(it)
+                if (it.isDirectory) {
+                    operatorXmlFile(it)
+                }
             }
         }
     }
 
     private fun operatorFile(file: File) {
-        try {
-            val reader = file.bufferedReader()
-            // tempFile为缓存文件，代码运行完毕后此文件将重命名为源文件名字。
-            val tempFile = File(file.absolutePath + ".tmp")
-            val writer = tempFile.bufferedWriter()
-            var str: String? = null
-            while (true) {
-                str = reader.readLine()
-                if (str == null) break
+        val tempFile = File(file.absolutePath + ".tmp")
 
-                if (!str.contains("@dimen/xdp_") && str.contains("dp\"") &&
-                        (str[str.indexOf("dp\"") - 1] + "").matches(Regex("\\d"))) {
-                    //如果已经修改过了，跳过，没修改过则修改dp
-                    val split = str.split("=\"")
-                    val dpNum = split[1].replace("dp", "")
-                    val result = split[0] + "=\"@dimen/xdp_" + dpNum
-                    writer.write(result + "\n")
-                } else if (!str.contains("@dimen/xsp_") && str.contains("sp\"") &&
-                        (str[(str.indexOf("sp\"")) - 1] + "").matches(Regex("\\d"))) {
-                    //如果已经修改过了，跳过，没修改过则修改sp
-                    val split = str.split("=\"")
-                    val spNum = split[1].replace("sp", "")
-                    val result = split[0] + "=\"@dimen/xsp_" + spNum
-                    writer.write(result + "\n")
-                } else writer.write(str + "\n")
+        file.bufferedReader().useLines { reader ->
+            tempFile.bufferedWriter().use { writer ->
+                reader.forEach {
+                    if ("@dimen/xdp_" !in it && "dp\"" in it &&
+                            (it[it.indexOf("dp\"") - 1] + "").matches(Regex("\\d"))) {
+                        //如果已经修改过了，跳过，没修改过则修改dp
+                        val split = it.split("=\"")
+                        val dpNum = split[1].replace("dp", "")
+                        val result = split[0] + "=\"@dimen/xdp_" + dpNum
+                        writer.write(result + "\n")
+                    } else if ("@dimen/xsp_" !in it && "sp\"" in "sp\"" &&
+                            (it[(it.indexOf("sp\"")) - 1] + "").matches(Regex("\\d"))) {
+                        //如果已经修改过了，跳过，没修改过则修改sp
+                        val split = it.split("=\"")
+                        val spNum = split[1].replace("sp", "")
+                        val result = split[0] + "=\"@dimen/xsp_" + spNum
+                        writer.write(result + "\n")
+                    } else writer.write(it + "\n")
+                }
             }
-            reader.close()
-            writer.close()
-            //删除源文件，重命名新文件
-            file.delete()
-            tempFile.renameTo(File(file.absolutePath))
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+        //删除源文件，重命名新文件
+        file.delete()
+        tempFile.renameTo(File(file.absolutePath))
     }
 }
 

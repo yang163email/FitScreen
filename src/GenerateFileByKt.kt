@@ -1,6 +1,5 @@
 package fitscreen
 
-import java.io.BufferedWriter
 import java.io.File
 import java.text.DecimalFormat
 
@@ -28,20 +27,20 @@ class GenerateFileByKt(baseW: Int, addition: String) {
     private val types = mutableListOf<Int>()
 
     init {
+        //默认添加320、360、411三个
         types.add(360)
-        if (!types.contains(baseW)) {
+        if (baseW !in types) {
             types.add(0, baseW)
-            if (baseW != 320) types.add(320)
-            if (baseW != 411) types.add(411)
+            if (baseW != 320) types += 320
+            if (baseW != 411) types += 411
         } else {
-            types.add(320)
-            types.add(411)
+            types += 320
+            types += 411
         }
-        if ("" != addition) {
-            val split = addition.split("_")
-            split.forEach {
+        if (addition.isNotEmpty()) {
+            addition.split("_").forEach {
                 try {
-                    types.add(it.toInt())
+                    types += it.toInt()
                 } catch (e: NumberFormatException) {
                     println("skip invalidate params : w = $it")
                     e.printStackTrace()
@@ -58,37 +57,30 @@ class GenerateFileByKt(baseW: Int, addition: String) {
             if (!typeDir.exists()) typeDir.mkdirs()
 
             val file = File(typeDir, "dimens.xml")
-            val bw: BufferedWriter? = null
-            try {
-                val bw = file.bufferedWriter()
-                bw.write("""<?xml version="1.0" encoding="utf-8"?>""")
-                bw.write("\n<resources>\n")
+
+            file.bufferedWriter().use {
+                it.write("""<?xml version="1.0" encoding="utf-8"?>""")
+                it.write("\n<resources>\n")
                 //注释内容
-                bw.write("\n<!-- the auto generate dimen values with ${value}dp minimum width -->\n")
+                it.write("\n<!-- the auto generate dimen values with ${value}dp minimum width -->\n")
 
                 /*------------------------------generate dp---------------------------------------*/
-                bw.write("\n<!--start generate dp-->\n")
+                it.write("\n<!--start generate dp-->\n")
                 for (j in 0..DP_NUM) {
                     //生成dp写入语句
-                    bw.write("""    <dimen name="xdp_$j">${df.format(value * 1.0 / types[0] * j)}dp</dimen>""")
-                    bw.newLine()
+                    it.write("""    <dimen name="xdp_$j">${df.format(value * 1.0 / types[0] * j)}dp</dimen>""")
+                    it.newLine()
                 }
 
                 /*------------------------------generate sp---------------------------------------*/
                 //注释内容
-                bw.write("\n<!--start generate sp-->\n")
+                it.write("\n<!--start generate sp-->\n")
                 for (k in 0..SP_NUM) {
                     //生成sp写入语句
-                    bw.write("""    <dimen name="xsp_$k">${df.format(value * 1.0 / types[0] * k)}sp</dimen>""")
-                    bw.newLine()
+                    it.write("""    <dimen name="xsp_$k">${df.format(value * 1.0 / types[0] * k)}sp</dimen>""")
+                    it.newLine()
                 }
-                bw.write("</resources>")
-                bw.flush()
-                bw.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            } finally {
-                bw?.close()
+                it.write("</resources>")
             }
         }
     }
